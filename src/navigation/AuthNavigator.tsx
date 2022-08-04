@@ -6,7 +6,7 @@ import {SignUpScreen} from '../screens/Auth/SignUpScreen';
 export const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerShown:false}}>
       <Stack.Screen name={'LoginScreen'} component={LoginScreen} />
       <Stack.Screen name={'SignUpScreen'} component={SignUpScreen} />
     </Stack.Navigator>
