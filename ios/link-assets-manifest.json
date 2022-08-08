@@ -1,0 +1,17 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Mouse.ttf",
+      "sha1": "b236a92b2a4920b88baa212fcf82ffcb0f0db0ac"
+    },
+    {
+      "path": "assets/fonts/OleoScriptBold.ttf",
+      "sha1": "7f15c1fee090213f831b0a81c7f2a9ee242806fa"
+    },
+    {
+      "path": "assets/fonts/OleoScriptRegular.ttf",
+      "sha1": "1f67c63319cab7256ddcff472c3d82302bfaae2d"
+    }
+  ]
+}
