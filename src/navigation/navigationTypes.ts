@@ -3,10 +3,12 @@ import {
   NavigatorScreenParams,
   useNavigation,
 } from '@react-navigation/native';
+import { SignUpScreen } from "../screens/Auth/SignUpScreen";
+import { MainScreen } from "../screens/Main/MainScreen";
 
 export type AuthNavigatorStackParamList = {
   LoginScreen: undefined;
-  Login: undefined;
+  SignUpScreen: undefined;
 };
 
 export type HomeNavigatorStackParamList = {
@@ -21,6 +23,7 @@ export type DrawerNavigatorParamList = {
 };
 
 export type MainNavigatorStackParamList = {
+  MainScreen:undefined
   AuthNavigator: NavigatorScreenParams<AuthNavigatorStackParamList>;
   DrawerNavigator: NavigatorScreenParams<DrawerNavigatorParamList>;
 };

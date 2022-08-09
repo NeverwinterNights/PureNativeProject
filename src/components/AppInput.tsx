@@ -14,6 +14,7 @@ type AppInputPropsType = {
   icon?: string
   width?: number | string
   direction?: "left" | "right"
+  error?:string
 }
 
 export const AppInput = ({
@@ -24,6 +25,7 @@ export const AppInput = ({
                            width = "100%",
                            label,
                            icon,
+                           error,
                            ...restProps
                          }: AppInputPropsType & TextInputProps) => {
 
@@ -36,6 +38,7 @@ export const AppInput = ({
         <TextInput placeholderTextColor={colors.grey} onChangeText={setText} value={text}
                    style={[styles.text, style]} {...restProps} />
       </View>
+      {error && <Text style={{color:"red", marginBottom:3}}>{error}</Text>}
     </>
   );
 };
@@ -44,12 +47,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
     borderRadius: 25,
-    padding: 15,
-    marginVertical: 10,
+    padding: 2,
+    marginVertical: 5,
     alignItems: "center",
   },
   label: {
-    fontSize: 30,
+    fontSize: 24,
     fontFamily: "OleoScriptRegular",
   },
   icon: {

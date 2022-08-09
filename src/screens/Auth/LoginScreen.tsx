@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Screen } from "../../components/Screen";
 import { AppInput } from "../../components/AppInput";
 import { CustomButton } from "../../components/CustomButton";
 import colors from "../../../assets/theme/colors";
+import { useAppNavigation } from "../../navigation/navigationTypes";
+import { AuthNavigator } from "../../navigation/AuthNavigator";
 
 type LoginScreenPropsType = {};
 
 export const LoginScreen = ({}: LoginScreenPropsType) => {
   const [text, setText] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useAppNavigation()
+
   return (
     <Screen style={styles.container}>
       <View style={styles.logo}>
@@ -22,6 +26,7 @@ export const LoginScreen = ({}: LoginScreenPropsType) => {
                 secureTextEntry={true} text={password}
                 setText={setPassword} />
       <View style={styles.buttonWrapper}><CustomButton color={"accent"}>Submit</CustomButton></View>
+      <TouchableOpacity onPress={()=> navigation.navigate("AuthNavigator", {screen:"SignUpScreen"})}><Text style={{textAlign:"right"}}>Register</Text></TouchableOpacity>
     </Screen>
   );
 };

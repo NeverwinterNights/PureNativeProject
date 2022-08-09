@@ -1,19 +1,16 @@
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {DrawerNavigator} from './src/navigation/DrawerNavigator';
-import {AuthNavigator} from './src/navigation/AuthNavigator';
-import { useAppSelector } from "./src/store/store";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { MainScreen } from "./src/screens/Main/MainScreen";
+import { MainNavigator } from "./src/navigation/MainNavigator";
 
 type MainPropsType = {};
 
 export const Main = ({}: MainPropsType) => {
 
-  const isLoggingIn = useAppSelector(state => state.authReducer.isLogging)
-
 
   return (
     <NavigationContainer>
-      {!isLoggingIn ? <AuthNavigator /> : <DrawerNavigator />}
+      <MainNavigator />
     </NavigationContainer>
   );
 };
