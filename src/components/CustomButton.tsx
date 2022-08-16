@@ -25,7 +25,7 @@ export const CustomButton = ({
                              }: CustomButtonPropsType) => {
   return (
     <TouchableOpacity disabled={disable} activeOpacity={0.6} onPress={onPress}
-                      style={[styles.button, style, { backgroundColor: colors[color] }]}>
+                      style={[styles.button, style, { backgroundColor: disable ? colors.grey : colors[color] }]}>
       <Text style={[styles.text, labelStyle]}>{loading ? <ActivityIndicator /> : children}</Text>
     </TouchableOpacity>
   );
@@ -33,13 +33,13 @@ export const CustomButton = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.primary,
+    // backgroundColor:  colors.primary,
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 30,
     marginVertical: 10,
-    width:"100%"
+    width: "100%",
   },
   text: {
     color: colors.white,

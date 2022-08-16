@@ -26,6 +26,7 @@ export const AppInput = ({
                            label,
                            icon,
                            error,
+
                            ...restProps
                          }: AppInputPropsType & TextInputProps) => {
 

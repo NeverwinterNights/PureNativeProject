@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useAppNavigation } from "../../navigation/navigationTypes";
 import { Screen } from "../../components/Screen";
 import { AppInput } from "../../components/AppInput";
 import { CustomButton } from "../../components/CustomButton";
-import { useAppDispatch } from "../../store/store";
-import { authTh } from "../../store/authReducer";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { authTh, clearAuthStateAC } from "../../store/authReducer";
+import { useFocusEffect } from "@react-navigation/native";
+
 // import envs from "../../config/env";
 // import {DEV_BACKEND_URL, PROD_BACKEND_URL} from "@env"
 
 
 type SignUpScreenPropsType = {};
 
-type  OnChangeParams = {
+export type  OnChangeParams = {
   name: string,
   value: string
 }
@@ -30,9 +32,27 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
   const [form, setForm] = useState<FormType>({} as FormType);
   const [error, setError] = useState<FormType>({} as FormType);
   const dispatch = useAppDispatch();
-
-
+  const errors = useAppSelector(state => state.authReducer.error);
+  const loading = useAppSelector(state => state.authReducer.loading);
+  const data = useAppSelector(state => state.authReducer.data);
   const navigation = useAppNavigation();
+
+  useEffect(() => {
+    if (data) {
+      navigation.navigate("AuthNavigator", { screen: "LoginScreen" });
+    }
+  }, [data]);
+
+
+  useFocusEffect(
+   useCallback(() => {
+     return ()=> {
+       if (data || errors) {
+         dispatch(clearAuthStateAC());
+       }
+     }
+    }, [data, errors]),
+  );
 
   const onChange = ({ name, value }: OnChangeParams) => {
     setForm({
@@ -61,6 +81,10 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
     if (!form.password) {
       setError((prev) => ({ ...prev, password: "Password is required" }));
     }
+    if (form.password.length < 6) {
+      setError((prev) => ({ ...prev, password: "Password is 6 character minimum" }));
+    }
+
 
     if (Object.values(form).length === 5 &&
       Object.values(form).every((item) => item.trim().length > 0) &&
@@ -80,19 +104,29 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
     <Screen style={styles.container}>
       <Text style={{ marginVertical: 15, textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Register</Text>
       <AppInput placeholder={"Enter Username"} icon={"emoticon-angry-outline"} label={"Username"} text={form.username}
-                setText={(value) => onChange({ name: "username", value })} error={error.username} />
+                setText={(value) => onChange({ name: "username", value })}
+                error={error.username || errors?.username?.[0]} />
+
       <AppInput placeholder={"Enter First"} icon={"emoticon-angry-outline"} label={"First"} text={form.firstName}
-                setText={(value) => onChange({ name: "firstName", value })} error={error.firstName} />
+                setText={(value) => onChange({ name: "firstName", value })}
+                error={error.firstName || errors?.first_name?.[0]} />
+
       <AppInput placeholder={"Enter Your Lastname"} icon={"emoticon-angry-outline"} label={"Lastname"}
                 text={form.lastname}
-                setText={(value) => onChange({ name: "lastname", value })} error={error.lastname} />
+                setText={(value) => onChange({ name: "lastname", value })}
+                error={error.lastname || errors?.last_name?.[0]} />
+
       <AppInput placeholder={"Enter Your Email"} keyboardType={"email-address"} icon={"emoticon-angry-outline"}
                 label={"Email"} text={form.email}
-                setText={(value) => onChange({ name: "email", value })} error={error.email} />
+                setText={(value) => onChange({ name: "email", value })} error={error.email || errors?.email?.[0]} />
+
       <AppInput placeholder={"Enter Password"} direction={"right"} icon={"eye"} label={"Password"}
                 secureTextEntry={true} text={form.password}
-                setText={(value) => onChange({ name: "password", value })} error={error.password} />
-      <View style={styles.buttonWrapper}><CustomButton onPress={onSubmit} color={"accent"}>Submit</CustomButton></View>
+                setText={(value) => onChange({ name: "password", value })}
+                error={error.password || errors?.password?.[0]} />
+
+      <View style={styles.buttonWrapper}><CustomButton loading={loading} disable={loading} onPress={onSubmit}
+                                                       color={"accent"}>Submit</CustomButton></View>
       <TouchableOpacity onPress={() => navigation.navigate("AuthNavigator", { screen: "LoginScreen" })}><Text
         style={{ textAlign: "right" }}>Login</Text></TouchableOpacity>
     </Screen>

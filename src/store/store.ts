@@ -3,8 +3,10 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 
 import thunkMiddleware from 'redux-thunk';
 import {appReducer} from './appReducer';
-import { authReducer } from "./authReducer";
+import { authReducer, ErrorType } from "./authReducer";
 import { contactsReducer } from "./contactsReducer";
+
+
 
 const rootReducer = combineReducers({
   appReducer: appReducer,
@@ -25,8 +27,8 @@ export type RootState = ReturnType<typeof store.getState>;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 
+
+
 export type ThunkError = {
-  rejectValue: {
-    error: string
-  }
+  rejectValue: ErrorType
 }
