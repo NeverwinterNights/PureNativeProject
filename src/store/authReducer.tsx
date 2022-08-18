@@ -11,7 +11,7 @@ export type ErrorType = {
   last_name?: string[]
   first_name?: string[]
   password?: string[]
-  detail?: {"detail": string}
+  detail?: string
 }
 
 type initialStateType = {
@@ -31,6 +31,7 @@ const initialState: initialStateType = {
 export const loginAC = createAction<{ value: boolean }>("app/loginAC");
 export const isLoadingAC = createAction<{ value: boolean }>("app/isLoadingAC");
 export const clearAuthStateAC = createAction("app/clearAuthStateAC");
+export const logOutAC = createAction("app/logOutAC");
 
 export const authTh = createAsyncThunk<any, LoginType, ThunkError>("auth/authTh", async (data, {
     dispatch,
@@ -41,6 +42,7 @@ export const authTh = createAsyncThunk<any, LoginType, ThunkError>("auth/authTh"
       await apiRequests.register(data);
       return data;
     } catch (err: any) {
+      console.log(err.response.data);
       // Alert.alert("Some error with registration");
       return rejectWithValue(err.response.data ? err.response.data : { error: "Some error with registration" });
     }
@@ -54,8 +56,8 @@ export const loginTh = createAsyncThunk<any, LoginData, ThunkError>("auth/loginT
     dispatch(isLoadingAC({ value: true }));
     try {
       const result = await apiRequests.login(data);
-      await AsyncStorage.setItem("token", result.data.token)
-      await AsyncStorage.setItem("user", JSON.stringify(result.data.user))
+      await AsyncStorage.setItem("token", result.data.token);
+      await AsyncStorage.setItem("user", JSON.stringify(result.data.user));
       return result.data.user;
     } catch (err: any) {
       return rejectWithValue(err.response.data ? err.response.data : { error: "Some error with login" });
@@ -89,14 +91,22 @@ const slice = createSlice({
           state.error = null;
         })
         .addCase(loginTh.fulfilled, (state, action) => {
-           state.isLogging = true;
-           state.data = action.payload;
-           state.loading = false;
+          state.isLogging = true;
+          state.data = action.payload;
+          state.loading = false;
         })
         .addCase(loginTh.rejected, (state, action) => {
           if (action.payload) {
-            state.error = action.payload;
+            state.error = { ...action.payload };
           }
+          state.loading = false;
+        })
+        .addCase(logOutAC, (state, action) => {
+          state.loading = true;
+          AsyncStorage.removeItem("token");
+          AsyncStorage.removeItem("user");
+          state.data = null;
+          state.isLogging = false;
           state.loading = false;
         });
     },

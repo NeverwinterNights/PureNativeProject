@@ -1,5 +1,15 @@
 import React from "react";
-import { StyleProp, StyleSheet, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "../../assets/theme/colors";
@@ -15,6 +25,7 @@ type AppInputPropsType = {
   width?: number | string
   direction?: "left" | "right"
   error?:string
+  onPress?:()=>void
 }
 
 export const AppInput = ({
@@ -26,7 +37,7 @@ export const AppInput = ({
                            label,
                            icon,
                            error,
-
+                           // typeChangeHandler,
                            ...restProps
                          }: AppInputPropsType & TextInputProps) => {
 
@@ -35,7 +46,7 @@ export const AppInput = ({
       {label && <View><Text style={styles.label}>{label}</Text></View>}
       <View
         style={[styles.container, { width: width }, { flexDirection: direction === "left" ? "row" : "row-reverse" }]}>
-        {icon && <MaterialCommunityIcons name={icon} style={styles.icon} size={20} color={colors.grey} />}
+        {icon && <TouchableOpacity onPress={restProps.onPress}><MaterialCommunityIcons name={icon} style={styles.icon} size={20} color={colors.grey} /></TouchableOpacity>}
         <TextInput placeholderTextColor={colors.grey} onChangeText={setText} value={text}
                    style={[styles.text, style]} {...restProps} />
       </View>

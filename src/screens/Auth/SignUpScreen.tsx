@@ -31,6 +31,7 @@ type  FormType = {
 export const SignUpScreen = ({}: SignUpScreenPropsType) => {
   const [form, setForm] = useState<FormType>({} as FormType);
   const [error, setError] = useState<FormType>({} as FormType);
+  const [type, setType] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const errors = useAppSelector(state => state.authReducer.error);
   const loading = useAppSelector(state => state.authReducer.loading);
@@ -53,6 +54,10 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
      }
     }, [data, errors]),
   );
+
+  const typeChangeHandler = () => {
+    setType((prev)=> !prev)
+  }
 
   const onChange = ({ name, value }: OnChangeParams) => {
     setForm({
@@ -120,8 +125,8 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
                 label={"Email"} text={form.email}
                 setText={(value) => onChange({ name: "email", value })} error={error.email || errors?.email?.[0]} />
 
-      <AppInput placeholder={"Enter Password"} direction={"right"} icon={"eye"} label={"Password"}
-                secureTextEntry={true} text={form.password}
+      <AppInput placeholder={"Enter Password"} direction={"right"} icon={"eye"} label={"Password"} onPress={typeChangeHandler}
+                secureTextEntry={type} text={form.password}
                 setText={(value) => onChange({ name: "password", value })}
                 error={error.password || errors?.password?.[0]} />
 
