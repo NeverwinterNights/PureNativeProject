@@ -3,6 +3,15 @@ import {StyleSheet, Text, View} from 'react-native';
 
 type SettingsPropsType = {};
 
+// export const ContactScreenOptions = ({navigation, route }: any) => {
+//   return {
+//     headerTitle: "Settings",
+//     headerTitleAlign: "center" as const,
+//   }
+// }
+
+
+
 export const SettingsScreen = ({}: SettingsPropsType) => {
   return (
     <View style={styles.container}>

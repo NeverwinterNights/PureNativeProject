@@ -58,10 +58,12 @@ export const AppInput = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    borderRadius: 25,
+    borderRadius: 15,
     padding: 2,
     marginVertical: 5,
     alignItems: "center",
+    borderColor:colors.grey,
+    borderWidth:1
   },
   label: {
     fontSize: 24,

@@ -12,6 +12,8 @@ export const MainScreen = ({}: MainPropsType) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
+
+
   const getUser = async () => {
     try {
       const user = await AsyncStorage.getItem("user");

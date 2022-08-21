@@ -4,10 +4,10 @@ import colors from "../../assets/theme/colors";
 
 type MessagePropsType = {
   message: string
-  primary?: any
-  danger?: any
+  primary?: boolean
+  danger?: boolean
   info?: any
-  success?: any
+  success?: boolean
   onDismiss?: () => void
   retry?: any
   retryFn?: () => void
@@ -56,11 +56,12 @@ export const Message = ({
             <Text
               style={{
                 color: colors.white,
+                flex: retry ? 0 : 1,
+                textAlign: "center",
               }}>
               {message}
             </Text>
-
-            {retry && typeof onDismiss !== "function" && (
+            {retry  && typeof onDismiss !== "function" &&  (
               <TouchableOpacity onPress={retryFn}>
                 <Text
                   style={{

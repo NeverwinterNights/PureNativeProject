@@ -1,14 +1,16 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 
 type initialStateType = {
-  num: number;
+  loading: boolean
 };
 
 const initialState: initialStateType = {
-  num: 1,
+  loading: false
 };
 
-export const addElAC = createAction<number>("app/setRegisterErrorAC");
+
+export const isLoadingAC = createAction<{ value: boolean }>("app/isLoadingAC");
+
 
 // export const sendPushTokenTh = createAsyncThunk('app/sendTushTokenTh', async (token: string, {
 //   dispatch,
@@ -24,8 +26,8 @@ const slice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(addElAC, (state, action) => {
-        state.num = action.payload;
+      .addCase(isLoadingAC, (state, action) => {
+      state.loading = action.payload.value
       });
   },
 });

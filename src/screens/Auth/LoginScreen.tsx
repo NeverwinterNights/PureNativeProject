@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Screen } from "../../components/Screen";
+import React, { useEffect, useState } from "react";
+import { Image, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { AppInput } from "../../components/AppInput";
 import { CustomButton } from "../../components/CustomButton";
 import { useAppNavigation } from "../../navigation/navigationTypes";
@@ -10,6 +9,7 @@ import { OnChangeParams } from "./SignUpScreen";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { LoginData } from "../../api/api";
 import { loginTh } from "../../store/authReducer";
+import { PasswordInput } from "../../components/PasswordInput";
 
 
 type LoginScreenPropsType = {};
@@ -17,16 +17,21 @@ type LoginScreenPropsType = {};
 export const LoginScreen = ({}: LoginScreenPropsType) => {
   const [formLoginData, setFormLoginData] = useState<LoginData>({} as LoginData);
   const [error, setError] = useState<LoginData>({} as LoginData);
-  const [type, setType] = useState<boolean>(false);
+  const [registeredUser, setRegisteredUser] = useState("");
+
   const dispatch = useAppDispatch();
   const errors = useAppSelector(state => state.authReducer.error);
-  const loading = useAppSelector(state => state.authReducer.loading);
+  const loading = useAppSelector(state => state.appReducer.loading);
   const navigation = useAppNavigation();
+  const data = useAppSelector(state => state.authReducer.data);
 
+  useEffect(() => {
+    if (data) {
+      setFormLoginData({ ...formLoginData, username: data.username });
+      setRegisteredUser(data.username);
+    }
+  }, []);
 
-  const typeChangeHandler = () => {
-    setType((prev) => !prev);
-  };
 
   const retryFn = () => {
     // console.log("hhhhh");
@@ -66,35 +71,40 @@ export const LoginScreen = ({}: LoginScreenPropsType) => {
   };
 
   return (
-    <Screen style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"position"} keyboardVerticalOffset={30}>
+    <View style={styles.container}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"position"} keyboardVerticalOffset={20}>
         <View style={styles.logo}>
           <Image style={styles.image} source={require("../../../assets/images/img_1.png")} />
         </View>
         <Text style={{ marginVertical: 20, textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Welcome To The
           Jungle!</Text>
 
-        {/*<Message retryFn={retryFn} onDismiss={onDismiss} retry message={"Invalid data"} primary />*/}
-
-        {errors && errors.detail && <Message onDismiss={onDismiss} primary message={errors.detail} />}
+        {registeredUser &&
+        <Message onDismiss={onDismiss} primary message={`User ${registeredUser} successfully created`} />}
+        {errors && errors.detail && <Message onDismiss={onDismiss} danger message={errors.detail} />}
         <AppInput placeholder={"Enter Your Name"} icon={"emoticon-angry-outline"} label={"Login"}
-                  text={formLoginData.username} error={error.username}
+                  text={formLoginData.username} error={error.username} autoCapitalize={"words"}
                   setText={(value) => onChange({ name: "username", value })} />
-        <AppInput onPress={typeChangeHandler} placeholder={"Enter Password"} direction={"right"}
-                  icon={type ? "eye" : "eye-off"} label={"Password"}
-                  secureTextEntry={type} text={formLoginData.password} error={error.password}
-                  setText={(value) => onChange({ name: "password", value })} />
+        {/*<AppInput onPress={typeChangeHandler} placeholder={"Enter Password"} direction={"right"}*/}
+        {/*          icon={type ? "eye" : "eye-off"} label={"Password"}*/}
+        {/*          secureTextEntry={type} text={formLoginData.password} error={error.password}*/}
+        {/*          setText={(value) => onChange({ name: "password", value })} />*/}
+        <PasswordInput text={formLoginData.password} error={error.password} direction={"right"} onChange={onChange}
+                       placeholder={"Enter Password"} />
         <View style={styles.buttonWrapper}><CustomButton disable={loading} loading={loading} onPress={onSubmit}
                                                          color={"accent"}>Submit</CustomButton></View>
         <TouchableOpacity onPress={() => navigation.navigate("AuthNavigator", { screen: "SignUpScreen" })}><Text
           style={{ textAlign: "right" }}>Register</Text></TouchableOpacity>
       </KeyboardAvoidingView>
-    </Screen>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+    padding: 20,
+  },
   image: {
     width: 200,
     height: 200,

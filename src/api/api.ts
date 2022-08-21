@@ -50,4 +50,7 @@ export const apiRequests = {
   login({username, password}:LoginData) {
     return instance.post("/auth/login", {username, password});
   },
+  getContacts() {
+    return instance.get("/contacts");
+  }
 };

@@ -2,6 +2,7 @@ import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiRequests, LoginData, LoginType } from "../api/api";
 import { ThunkError } from "./store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isLoadingAC } from "./appReducer";
 
 
 export type ErrorType = {
@@ -18,20 +19,17 @@ type initialStateType = {
   isLogging: boolean
   data: LoginType | null
   error: null | ErrorType
-  loading: boolean
 };
 
 const initialState: initialStateType = {
   isLogging: false,
   data: null as null | LoginType,
   error: null,
-  loading: false,
 };
 
-export const loginAC = createAction<{ value: boolean }>("app/loginAC");
-export const isLoadingAC = createAction<{ value: boolean }>("app/isLoadingAC");
-export const clearAuthStateAC = createAction("app/clearAuthStateAC");
-export const logOutAC = createAction("app/logOutAC");
+export const loginAC = createAction<{ value: boolean }>("auth/loginAC");
+export const clearAuthStateAC = createAction("auth/clearAuthStateAC");
+export const logOutAC = createAction("auth/logOutAC");
 
 export const authTh = createAsyncThunk<any, LoginType, ThunkError>("auth/authTh", async (data, {
     dispatch,
@@ -40,10 +38,11 @@ export const authTh = createAsyncThunk<any, LoginType, ThunkError>("auth/authTh"
     dispatch(isLoadingAC({ value: true }));
     try {
       await apiRequests.register(data);
+      dispatch(isLoadingAC({ value: false }));
       return data;
     } catch (err: any) {
-      console.log(err.response.data);
       // Alert.alert("Some error with registration");
+      dispatch(isLoadingAC({ value: false }));
       return rejectWithValue(err.response.data ? err.response.data : { error: "Some error with registration" });
     }
   },
@@ -58,8 +57,10 @@ export const loginTh = createAsyncThunk<any, LoginData, ThunkError>("auth/loginT
       const result = await apiRequests.login(data);
       await AsyncStorage.setItem("token", result.data.token);
       await AsyncStorage.setItem("user", JSON.stringify(result.data.user));
+      dispatch(isLoadingAC({ value: false }));
       return result.data.user;
     } catch (err: any) {
+      dispatch(isLoadingAC({ value: false }));
       return rejectWithValue(err.response.data ? err.response.data : { error: "Some error with login" });
     }
   },
@@ -72,42 +73,31 @@ const slice = createSlice({
     extraReducers: builder => {
       builder
         .addCase(authTh.fulfilled, (state, action) => {
-          state.isLogging = true;
           state.data = action.payload;
-          state.loading = false;
         })
         .addCase(authTh.rejected, (state, action) => {
           if (action.payload) {
             state.error = action.payload;
           }
-          state.loading = false;
-        })
-        .addCase(isLoadingAC, (state, action) => {
-          state.loading = action.payload.value;
         })
         .addCase(clearAuthStateAC, (state, action) => {
           state.data = null;
-          state.loading = false;
           state.error = null;
         })
         .addCase(loginTh.fulfilled, (state, action) => {
           state.isLogging = true;
           state.data = action.payload;
-          state.loading = false;
         })
         .addCase(loginTh.rejected, (state, action) => {
           if (action.payload) {
             state.error = { ...action.payload };
           }
-          state.loading = false;
         })
         .addCase(logOutAC, (state, action) => {
-          state.loading = true;
           AsyncStorage.removeItem("token");
           AsyncStorage.removeItem("user");
           state.data = null;
           state.isLogging = false;
-          state.loading = false;
         });
     },
   },

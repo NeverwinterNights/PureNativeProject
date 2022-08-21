@@ -7,6 +7,7 @@ import { CustomButton } from "../../components/CustomButton";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { authTh, clearAuthStateAC } from "../../store/authReducer";
 import { useFocusEffect } from "@react-navigation/native";
+import { PasswordInput } from "../../components/PasswordInput";
 
 // import envs from "../../config/env";
 // import {DEV_BACKEND_URL, PROD_BACKEND_URL} from "@env"
@@ -31,7 +32,6 @@ type  FormType = {
 export const SignUpScreen = ({}: SignUpScreenPropsType) => {
   const [form, setForm] = useState<FormType>({} as FormType);
   const [error, setError] = useState<FormType>({} as FormType);
-  const [type, setType] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const errors = useAppSelector(state => state.authReducer.error);
   const loading = useAppSelector(state => state.authReducer.loading);
@@ -40,24 +40,23 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
 
   useEffect(() => {
     if (data) {
+      setForm({} as FormType);
       navigation.navigate("AuthNavigator", { screen: "LoginScreen" });
     }
   }, [data]);
 
 
   useFocusEffect(
-   useCallback(() => {
-     return ()=> {
-       if (data || errors) {
-         dispatch(clearAuthStateAC());
-       }
-     }
+    useCallback(() => {
+      return () => {
+        if (data || errors) {
+          dispatch(clearAuthStateAC());
+        }
+      };
     }, [data, errors]),
   );
 
-  const typeChangeHandler = () => {
-    setType((prev)=> !prev)
-  }
+
 
   const onChange = ({ name, value }: OnChangeParams) => {
     setForm({
@@ -102,7 +101,6 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
         last_name: form.lastname,
       }));
     }
-
   };
 
   return (
@@ -110,25 +108,28 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
       <Text style={{ marginVertical: 15, textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Register</Text>
       <AppInput placeholder={"Enter Username"} icon={"emoticon-angry-outline"} label={"Username"} text={form.username}
                 setText={(value) => onChange({ name: "username", value })}
-                error={error.username || errors?.username?.[0]} />
+                error={error.username || errors?.username?.[0]} autoCapitalize={"words"} />
 
       <AppInput placeholder={"Enter First"} icon={"emoticon-angry-outline"} label={"First"} text={form.firstName}
                 setText={(value) => onChange({ name: "firstName", value })}
-                error={error.firstName || errors?.first_name?.[0]} />
+                error={error.firstName || errors?.first_name?.[0]} autoCapitalize={"words"} />
 
       <AppInput placeholder={"Enter Your Lastname"} icon={"emoticon-angry-outline"} label={"Lastname"}
                 text={form.lastname}
                 setText={(value) => onChange({ name: "lastname", value })}
-                error={error.lastname || errors?.last_name?.[0]} />
+                error={error.lastname || errors?.last_name?.[0]} autoCapitalize={"words"} />
 
       <AppInput placeholder={"Enter Your Email"} keyboardType={"email-address"} icon={"emoticon-angry-outline"}
                 label={"Email"} text={form.email}
                 setText={(value) => onChange({ name: "email", value })} error={error.email || errors?.email?.[0]} />
 
-      <AppInput placeholder={"Enter Password"} direction={"right"} icon={"eye"} label={"Password"} onPress={typeChangeHandler}
-                secureTextEntry={type} text={form.password}
-                setText={(value) => onChange({ name: "password", value })}
-                error={error.password || errors?.password?.[0]} />
+      {/*<AppInput placeholder={"Enter Password"} direction={"right"} icon={type ? "eye" : "eye-off"} label={"Password"}*/}
+      {/*          onPress={typeChangeHandler}*/}
+      {/*          secureTextEntry={type} text={form.password}*/}
+      {/*          setText={(value) => onChange({ name: "password", value })}*/}
+      {/*          error={error.password || errors?.password?.[0]} />*/}
+      <PasswordInput text={form.password} error={error.password || errors?.password?.[0]} direction={"right"} onChange={onChange}
+                     placeholder={"Enter Password"} />
 
       <View style={styles.buttonWrapper}><CustomButton loading={loading} disable={loading} onPress={onSubmit}
                                                        color={"accent"}>Submit</CustomButton></View>

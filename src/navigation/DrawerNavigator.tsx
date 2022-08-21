@@ -55,8 +55,8 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             flexDirection: "row", alignItems: "center",
             justifyContent: "center", marginVertical: 20,
           }} onPress={handleLogOut}>
+            <Ionicons color={"grey"} style={{marginRight: 10}} size={26} name={"log-out"}/>
             <Text>Log Out</Text>
-            {/*<Ionicons color={"grey"} style={{marginRight: 10}} size={20} name={"log-out"}/>*/}
             {/*<AppText style={{fontFamily: "open-sans-bold"}}>Log Out</AppText>*/}
           </Pressable>
         </View>
