@@ -2,7 +2,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import { ContactScreen, ContactScreenOptions } from "../screens/Home/ContactScreen";
 import {ContactDetailScreen} from '../screens/Home/ContactDetailScreen';
-import { CreateContactScreen, CreateContactScreenOptions } from "../screens/Home/CreateContactScreen";
+import { CreateContactScreen } from "../screens/Home/CreateContactScreen";
 import {SettingsScreen} from '../screens/Home/SettingsScreen';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { useAppNavigation } from "./navigationTypes";
@@ -13,7 +13,7 @@ export const HomeNavigator = () => {
 
   return (
     <Stack.Navigator initialRouteName={'Contact'}>
-      <Stack.Screen name={'Contact'} component={ContactScreen} options={ContactScreenOptions} />
+      <Stack.Screen name={'ContactScreen'} component={ContactScreen} options={ContactScreenOptions} />
       <Stack.Screen
         name={'ContactDetailScreen'}
         component={ContactDetailScreen}
@@ -29,7 +29,6 @@ export const HomeNavigator = () => {
                 <HeaderBackButton style={{left:-13}} onPress={navigation.goBack} {...props} />
             );
           },
-
         }}
       />
       <Stack.Screen name={'SettingsScreen'} component={SettingsScreen} options={{

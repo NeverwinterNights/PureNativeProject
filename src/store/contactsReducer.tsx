@@ -1,6 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { apiRequests } from "../api/api";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { apiRequests, LoginData } from "../api/api";
 import { isLoadingAC } from "./appReducer";
+import { ThunkError } from "./store";
+import { ErrorType } from "./authReducer";
 
 export type ContactData = {
   country_code: string
@@ -15,33 +17,19 @@ export type ContactData = {
 
 type initialStateType = {
   data: ContactData[]
-  error: null | string
+  error: null | ErrorType
   loading: boolean
 };
 
 const initialState: initialStateType = {
-  data: [{
-    country_code: "+375",
-    id: 232343434,
-    first_name: "Pavel",
-    last_name: "AAA",
-    phone_number: "4564567567768",
-    contact_picture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDL0a-T9B_IgKwBYPDVOosAXPLGiufwxcFuyXTQQVA&s",
-    is_favorite: true,
-  },
-    {
-      country_code: "Minsk",
-      id: 4545,
-      first_name: "Pacavaca",
-      last_name: "",
-      phone_number: "344",
-      contact_picture: "",
-      is_favorite: true,
-    },
-  ],
+  data: [],
   error: null,
   loading: false,
 };
+
+
+export const clearErrorsAC = createAction("auth/clearErrorsAC");
+
 
 
 export const getContactsTh = createAsyncThunk("contacts/getContactsTh", async (param, {
@@ -53,22 +41,60 @@ export const getContactsTh = createAsyncThunk("contacts/getContactsTh", async (p
     try {
       const res = await apiRequests.getContacts();
       dispatch(isLoadingAC({ value: false }));
+      return res.data;
     } catch (error) {
-      console.log("error", error);
       dispatch(isLoadingAC({ value: false }));
     }
   },
 );
+
+
+export const createContactsTh = createAsyncThunk<any, any, ThunkError>("contacts/createContactsTh", async (param: {country_code: string, first_name: string, last_name: string, phone_number: string, contact_picture: string, is_favorite: boolean }, {
+    dispatch,
+    rejectWithValue,
+  }) => {
+    dispatch(isLoadingAC({ value: true }));
+
+    try {
+      const res = await apiRequests.createContacts({
+        country_code: param.country_code,
+        first_name: param.first_name,
+        last_name: param.last_name,
+        phone_number: param.phone_number,
+        contact_picture: param.contact_picture,
+        is_favorite: param.is_favorite,
+      });
+      // param.callback()
+      dispatch(isLoadingAC({ value: false }));
+      return res.data
+    } catch (error: any) {
+      dispatch(isLoadingAC({ value: false }));
+      return rejectWithValue(error.response.data ? error.response.data : { error: "Some error with create contact" });
+    }
+  },
+);
+
 
 const slice = createSlice({
   name: "contacts",
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder;
-    // .addCase(loginAC, (state, action) => {
-
-    //     });
+    builder
+      .addCase(getContactsTh.fulfilled, (state, action) => {
+        state.data = action.payload;
+      })
+      .addCase(createContactsTh.fulfilled, (state, action) => {
+        state.data =[...state.data, action.payload ]
+      })
+      .addCase(createContactsTh.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload
+        }
+      })
+      .addCase(clearErrorsAC, (state, action) => {
+          state.error = null
+      })
   },
 });
 

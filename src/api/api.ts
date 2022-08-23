@@ -12,8 +12,18 @@ export type LoginType = {
 }
 
 export type LoginData = {
-  username:string
+  username: string
   password: string
+}
+
+
+export type CreateContact = {
+  country_code: string
+  first_name: string
+  last_name: string
+  phone_number: string
+  contact_picture: string
+  is_favorite: boolean
 }
 
 
@@ -23,9 +33,6 @@ export const instance = axios.create({
   baseURL: DEV_BACKEND_URL,
   headers,
 });
-
-
-
 
 
 instance.interceptors.request.use(
@@ -47,10 +54,13 @@ export const apiRequests = {
       email, password, username, first_name, last_name,
     });
   },
-  login({username, password}:LoginData) {
-    return instance.post("/auth/login", {username, password});
+  login({ username, password }: LoginData) {
+    return instance.post("/auth/login", { username, password });
   },
   getContacts() {
     return instance.get("/contacts");
-  }
+  },
+  createContacts({ country_code, first_name, last_name, phone_number, contact_picture, is_favorite }: CreateContact) {
+    return instance.post("/contacts/", {country_code, first_name, last_name, phone_number, contact_picture, is_favorite});
+  },
 };

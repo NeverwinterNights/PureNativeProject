@@ -11,6 +11,7 @@ type MessagePropsType = {
   onDismiss?: () => void
   retry?: any
   retryFn?: () => void
+
 }
 
 export const Message = ({
@@ -22,6 +23,7 @@ export const Message = ({
                           danger,
                           info,
                           success,
+
                         }: MessagePropsType) => {
 
   const [userDismissed, setDismissed] = useState(false);
@@ -61,7 +63,7 @@ export const Message = ({
               }}>
               {message}
             </Text>
-            {retry  && typeof onDismiss !== "function" &&  (
+            {retry && typeof onDismiss !== "function" && (
               <TouchableOpacity onPress={retryFn}>
                 <Text
                   style={{

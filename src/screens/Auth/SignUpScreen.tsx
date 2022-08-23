@@ -34,7 +34,7 @@ export const SignUpScreen = ({}: SignUpScreenPropsType) => {
   const [error, setError] = useState<FormType>({} as FormType);
   const dispatch = useAppDispatch();
   const errors = useAppSelector(state => state.authReducer.error);
-  const loading = useAppSelector(state => state.authReducer.loading);
+  const loading = useAppSelector(state => state.appReducer.loading);
   const data = useAppSelector(state => state.authReducer.data);
   const navigation = useAppNavigation();
 

@@ -14,7 +14,7 @@ type ContactScreenPropsType = {};
 
 export const ContactScreenOptions = ({ navigation }: any) => {
   return {
-    // headerTitle: "Contacts",
+    headerTitle: "Contacts",
     headerTitleAlign: "center" as const,
     headerLeft: () => (
       <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
@@ -39,8 +39,8 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
   }, []);
 
   const createContact = () => {
-    navigation.navigate("DrawerNavigator",  { screen: "HomeNavigator", params:{screen:"CreateContactScreen"} })
-  }
+    navigation.navigate("DrawerNavigator", { screen: "HomeNavigator", params: { screen: "CreateContactScreen" } });
+  };
 
 
   const listEmptyComponent = () => {
@@ -50,7 +50,6 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
       </View>
     );
   };
-
 
 
   const renderFunc = (item: ContactData) => {
@@ -67,14 +66,13 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
               <Text style={styles.text}>{item.first_name}</Text>
               {item.last_name && <Text style={styles.text}> {item.last_name}</Text>}
             </View>
-            <Text style={styles.phone}>{`${item.country_code} ${item.phone_number}`}</Text>
+            <Text style={styles.phone}>{`+ ${item.country_code} ${item.phone_number}`}</Text>
           </View>
         </View>
         <MaterialCommunityIcons color={colors.grey} name={"chevron-right"} size={26} />
       </TouchableOpacity>
     );
   };
-
 
   return (
     <>
@@ -86,7 +84,7 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
         <View style={[styles.empty, { padding: isLoading ? 100 : 0 }]}>
           {isLoading && <ActivityIndicator color={colors.primary} size={"large"} />}
         </View>
-        {!isLoading &&
+        {!isLoading && contactsData &&
         <FlatList data={contactsData}
                   renderItem={({ item }) => renderFunc(item)}
                   ItemSeparatorComponent={() => (<View style={{ height: 0.5, backgroundColor: colors.grey }} />)}
@@ -114,22 +112,22 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     position: "absolute",
-    bottom:25,
-    right:25,
+    bottom: 25,
+    right: 25,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius:55/2,
+    borderRadius: 55 / 2,
   },
-  addButton2:{
+  addButton2: {
     backgroundColor: "red",
     width: 55,
     height: 55,
     position: "absolute",
-    bottom:50,
-    left:5,
+    bottom: 50,
+    left: 5,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius:55/2,
+    borderRadius: 55 / 2,
   },
 
   phone: {

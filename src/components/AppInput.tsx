@@ -24,8 +24,8 @@ type AppInputPropsType = {
   icon?: string
   width?: number | string
   direction?: "left" | "right"
-  error?:string
-  onPress?:()=>void
+  error?: string
+  onPress?: () => void
 }
 
 export const AppInput = ({
@@ -46,11 +46,18 @@ export const AppInput = ({
       {label && <View><Text style={styles.label}>{label}</Text></View>}
       <View
         style={[styles.container, { width: width }, { flexDirection: direction === "left" ? "row" : "row-reverse" }]}>
-        {icon && <TouchableOpacity onPress={restProps.onPress}><MaterialCommunityIcons name={icon} style={styles.icon} size={20} color={colors.grey} /></TouchableOpacity>}
+        {icon &&
+        <TouchableOpacity onPress={restProps.onPress}><MaterialCommunityIcons name={icon} style={styles.icon} size={20}
+                                                                              color={colors.grey} /></TouchableOpacity>}
+
+        {/*{element &&*/}
+        {/*<TouchableOpacity onPress={restProps.onPress}>{element}</TouchableOpacity>}*/}
+
+
         <TextInput placeholderTextColor={colors.grey} onChangeText={setText} value={text}
                    style={[styles.text, style]} {...restProps} />
       </View>
-      {error && <Text style={{color:"red", marginBottom:3}}>{error}</Text>}
+      {error && <Text style={{ color: "red", marginBottom: 3 }}>{error}</Text>}
     </>
   );
 };
@@ -62,8 +69,8 @@ const styles = StyleSheet.create({
     padding: 2,
     marginVertical: 5,
     alignItems: "center",
-    borderColor:colors.grey,
-    borderWidth:1
+    borderColor: colors.grey,
+    borderWidth: 1,
   },
   label: {
     fontSize: 24,
