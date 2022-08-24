@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { Image, KeyboardAvoidingView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import React, { useCallback, useRef, useState } from "react";
+import { Image, KeyboardAvoidingView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
 import colors from "../../../assets/theme/colors";
 import { AppInput } from "../../components/AppInput";
 import { CustomButton } from "../../components/CustomButton";
@@ -12,6 +12,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useAppNavigation } from "../../navigation/navigationTypes";
 import { Message } from "../../components/Message";
 import { CreateContact } from "../../api/api";
+import RBSheet from "react-native-raw-bottom-sheet";
+import { PicturePicker } from "../../components/PicturePicker";
 
 
 type FormContactCreateType = {
@@ -124,12 +126,31 @@ export const CreateContactScreen = () => {
     });
   };
 
+  const sheetRef = useRef<RBSheet | null>(null);
+
+  const closeSheet = () => {
+    if (sheetRef.current) {
+      // @ts-ignore
+      sheetRef.current.close()
+    }
+  }
+
+  const openSheet = () => {
+    if (sheetRef.current) {
+
+      sheetRef.current?.open()
+    }
+  }
+
+
+
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={"position"} keyboardVerticalOffset={88}>
         <Image style={styles.avatar}
                source={{ uri: "http://cdn01.ru/files/users/images/62/26/6226a248e23a10fccedf0c81e001285d.jpg" }} />
-        <Text style={{ textAlign: "center" }}>Choose image</Text>
+       <TouchableOpacity onPress={openSheet}><Text style={{ textAlign: "center" }}>Choose image</Text></TouchableOpacity>
         {combinedErrors && combinedErrors.map((item, index) => <View key={index}><Message onDismiss={onDismiss}
                                                                                           danger
                                                                                           message={JSON.stringify(item).slice(1, -1)} /></View>)}
@@ -192,6 +213,7 @@ export const CreateContactScreen = () => {
           </View>
         </View>
         <CustomButton loading={loading} disable={loading} onPress={onSubmit}>{"Create Contact"}</CustomButton>
+        <PicturePicker ref={sheetRef}  onClose={closeSheet} onOpen={openSheet}/>
       </KeyboardAvoidingView>
     </View>
   );
