@@ -62,7 +62,7 @@ export const createContactsTh = createAsyncThunk<any, any, ThunkError>("contacts
         last_name: param.last_name,
         phone_number: param.phone_number,
         contact_picture: param.contact_picture,
-        is_favorite: param.is_favorite,
+        is_favorite: param.is_favorite || false,
       });
       // param.callback()
       dispatch(isLoadingAC({ value: false }));

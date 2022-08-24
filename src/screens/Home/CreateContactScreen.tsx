@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, KeyboardAvoidingView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import colors from "../../../assets/theme/colors";
 import { AppInput } from "../../components/AppInput";
 import { CustomButton } from "../../components/CustomButton";
@@ -20,22 +20,18 @@ type FormContactCreateType = {
   phoneNumber: string
   countryCode: CountryCode
   phoneCode: string
+  is_favorite: boolean
 }
 
 
-
 export const CreateContactScreen = () => {
-  const [form, setForm] = useState<FormContactCreateType>({} as FormContactCreateType);
+  const [form, setForm] = useState<FormContactCreateType>({ is_favorite: false } as FormContactCreateType);
   const [error, setError] = useState<FormContactCreateType>({} as FormContactCreateType);
   const dispatch = useAppDispatch();
   const errors = useAppSelector(state => state.contactsReducer.error);
   const navigation = useAppNavigation();
   const loading = useAppSelector(state => state.appReducer.loading);
 
-
-  // useEffect(()=> {
-  //   setForm({} as FormContactCreateType)
-  // },[])
 
   useFocusEffect(
     useCallback(() => {
@@ -60,7 +56,7 @@ export const CreateContactScreen = () => {
 
   const onSubmit = async () => {
     if (!form.firstName) {
-      setError((prev) => ({ ...prev, firstName: "First Name is required" }));
+      setError((prev) => ({ ...prev, firstName: "First name is required" }));
     }
     if (!form.lastName) {
       setError((prev) => ({ ...prev, lastName: "Last name is required" }));
@@ -69,7 +65,7 @@ export const CreateContactScreen = () => {
       setError((prev) => ({ ...prev, phoneNumber: "Phone number is required" }));
     }
     if (!form.phoneCode || form.countryCode === "AQ") {
-      setError((prev) => ({ ...prev, phoneCode: "Phone Code number is required" }));
+      setError((prev) => ({ ...prev, phoneCode: "Phone code number is required" }));
     }
     if (form.countryCode === "AQ") {
       setError((prev) => ({ ...prev, phoneCode: "Antarctica has no area code" }));
@@ -81,15 +77,19 @@ export const CreateContactScreen = () => {
 
     if (Object.values(form).length === 5 &&
       Object.values(form).every((item) => item) &&
-      Object.values(error).every((item) => !item) &&
-      Object.values(form).every((item) => item.trim().length > 0)) {
+      Object.values(error).every((item) => !item)
+      && Object.values(form).every((item) => {
+        if (typeof item === "string")
+          return item.trim().length > 0;
+      })
+    ) {
       const param: CreateContact = {
         country_code: form.phoneCode,
         first_name: form.firstName,
         last_name: form.lastName,
         phone_number: form.phoneNumber,
         contact_picture: "https://zefirka.net/wp-content/uploads/2018/05/strannye-foto-na-kotoryx-chto-to-ne-tak-1.jpg",
-        is_favorite: false,
+        is_favorite: form.is_favorite,
       };
       const response = await dispatch(createContactsTh(param));
       if (response.type === "contacts/createContactsTh/fulfilled") {
@@ -117,10 +117,16 @@ export const CreateContactScreen = () => {
     }
   }
 
+  const toggleSwitch = () => {
+    setForm({
+      ...form,
+      is_favorite: !form.is_favorite,
+    });
+  };
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"position"} keyboardVerticalOffset={84}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"position"} keyboardVerticalOffset={88}>
         <Image style={styles.avatar}
                source={{ uri: "http://cdn01.ru/files/users/images/62/26/6226a248e23a10fccedf0c81e001285d.jpg" }} />
         <Text style={{ textAlign: "center" }}>Choose image</Text>
@@ -174,6 +180,16 @@ export const CreateContactScreen = () => {
           </View>
           {error.phoneCode && <Text style={{ color: "red", marginBottom: 3 }}>{error.phoneCode}</Text>}
           {error.phoneNumber && <Text style={{ color: "red", marginBottom: 3 }}>{error.phoneNumber}</Text>}
+          <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+            <Text style={{fontSize:16}}>Add to favorites</Text>
+            <Switch
+            trackColor={{ false: colors.grey, true: colors.primary }}
+            thumbColor={form.is_favorite ? colors.accent : "#f4f3f4"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={form.is_favorite}
+          />
+          </View>
         </View>
         <CustomButton loading={loading} disable={loading} onPress={onSubmit}>{"Create Contact"}</CustomButton>
       </KeyboardAvoidingView>
