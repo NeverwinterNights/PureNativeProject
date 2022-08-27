@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { AppModal } from "../../components/AppModal";
@@ -8,6 +8,8 @@ import { ContactData, getContactsTh } from "../../store/contactsReducer";
 import colors from "../../../assets/theme/colors";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAppNavigation } from "../../navigation/navigationTypes";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 type ContactScreenPropsType = {};
 
@@ -28,11 +30,31 @@ export const ContactScreenOptions = ({ navigation }: any) => {
 
 export const ContactScreen = ({}: ContactScreenPropsType) => {
   const [visibleModal, setVisibleModal] = useState(false);
+  const [sortBySetting, setSortBySetting] = useState<string | null>(null);
+
   const contactsData = useAppSelector(state => state.contactsReducer.data);
   const isLoading = useAppSelector(state => state.appReducer.loading);
   const contactsError = useAppSelector(state => state.contactsReducer.error);
   const dispatch = useAppDispatch();
   const navigation = useAppNavigation();
+
+
+  const getSettings = async () => {
+    const sortBy = await AsyncStorage.getItem("sortBy");
+    if (sortBy) {
+      setSortBySetting((prev) => sortBy);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getSettings();
+
+      return () => {
+      };
+    }, []),
+  );
+
 
   useEffect(() => {
     dispatch(getContactsTh());
@@ -77,19 +99,36 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
   return (
     <>
       <View style={styles.container}>
-        <AppModal modalBody={<View><Text>Modal</Text></View>} iconName={"close"} title={"Profile"}
-                  visibleModal={visibleModal} setVisibleModal={setVisibleModal} />
+        {/*<AppModal modalBody={<View><Text>Modal</Text></View>} iconName={"close"} title={"Profile"}*/}
+        {/*          visibleModal={visibleModal} setVisibleModal={setVisibleModal} />*/}
 
         {/*<CustomButton children={"Text"} onPress={() => setVisibleModal(true)} />*/}
         <View style={[styles.empty, { padding: isLoading ? 100 : 0 }]}>
           {isLoading && <ActivityIndicator color={colors.primary} size={"large"} />}
         </View>
         {!isLoading && contactsData &&
-        <FlatList data={contactsData}
-                  renderItem={({ item }) => renderFunc(item)}
-                  ItemSeparatorComponent={() => (<View style={{ height: 0.5, backgroundColor: colors.grey }} />)}
-                  ListFooterComponent={<View style={{ height: 100 }} />}
-                  ListEmptyComponent={listEmptyComponent} keyExtractor={(item) => item.id.toString()} />
+          <FlatList data={sortBySetting ? [...contactsData].sort((a, b) => {
+            if (sortBySetting === "First name") {
+              if (b.first_name > a.first_name) {
+                return -1;
+              } else {
+                return 1;
+              }
+            }
+            if (sortBySetting === "Last name") {
+              if (b.last_name > a.last_name) {
+                return -1;
+              } else {
+                return 1;
+              }
+            } else {
+              return 0;
+            }
+          }) : contactsData}
+                    renderItem={({ item }) => renderFunc(item)}
+                    ItemSeparatorComponent={() => (<View style={{ height: 0.5, backgroundColor: colors.grey }} />)}
+                    ListFooterComponent={<View style={{ height: 100 }} />}
+                    ListEmptyComponent={listEmptyComponent} keyExtractor={(item) => item.id.toString()} />
         }
       </View>
       <TouchableOpacity onPress={createContact} style={styles.addButton}>

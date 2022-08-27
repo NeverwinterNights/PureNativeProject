@@ -26,9 +26,21 @@ type FormContactCreateType = {
 }
 
 
+export type ImageLocalFileType = {
+  cropRect: { height: number, width: number, x: number, y: number },
+  height: number,
+  mime: string,
+  modificationDate: string,
+  path: string,
+  size: number,
+  width: number
+}
+
+
 export const CreateContactScreen = () => {
   const [form, setForm] = useState<FormContactCreateType>({ is_favorite: false } as FormContactCreateType);
   const [error, setError] = useState<FormContactCreateType>({} as FormContactCreateType);
+  const [localFilePicture, setLocalFilePicture] = useState<ImageLocalFileType | null>(null);
   const dispatch = useAppDispatch();
   const errors = useAppSelector(state => state.contactsReducer.error);
   const navigation = useAppNavigation();
@@ -131,26 +143,31 @@ export const CreateContactScreen = () => {
   const closeSheet = () => {
     if (sheetRef.current) {
       // @ts-ignore
-      sheetRef.current.close()
+      sheetRef.current.close();
     }
-  }
+  };
 
   const openSheet = () => {
     if (sheetRef.current) {
 
-      sheetRef.current?.open()
+      sheetRef.current?.open();
     }
-  }
+  };
 
-
+  const onFileSelected = (images: ImageLocalFileType) => {
+    closeSheet();
+    setLocalFilePicture(images);
+  };
 
 
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={"position"} keyboardVerticalOffset={88}>
         <Image style={styles.avatar}
-               source={{ uri: "http://cdn01.ru/files/users/images/62/26/6226a248e23a10fccedf0c81e001285d.jpg" }} />
-       <TouchableOpacity onPress={openSheet}><Text style={{ textAlign: "center" }}>Choose image</Text></TouchableOpacity>
+               source={{ uri: localFilePicture?.path || "http://cdn01.ru/files/users/images/62/26/6226a248e23a10fccedf0c81e001285d.jpg" }} />
+        <TouchableOpacity onPress={openSheet}>
+          <Text style={{ textAlign: "center" }}>Choose image</Text>
+        </TouchableOpacity>
         {combinedErrors && combinedErrors.map((item, index) => <View key={index}><Message onDismiss={onDismiss}
                                                                                           danger
                                                                                           message={JSON.stringify(item).slice(1, -1)} /></View>)}
@@ -201,19 +218,19 @@ export const CreateContactScreen = () => {
           </View>
           {error.phoneCode && <Text style={{ color: "red", marginBottom: 3 }}>{error.phoneCode}</Text>}
           {error.phoneNumber && <Text style={{ color: "red", marginBottom: 3 }}>{error.phoneNumber}</Text>}
-          <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-            <Text style={{fontSize:16}}>Add to favorites</Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <Text style={{ fontSize: 16 }}>Add to favorites</Text>
             <Switch
-            trackColor={{ false: colors.grey, true: colors.primary }}
-            thumbColor={form.is_favorite ? colors.accent : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={form.is_favorite}
-          />
+              trackColor={{ false: colors.grey, true: colors.primary }}
+              thumbColor={form.is_favorite ? colors.accent : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={form.is_favorite}
+            />
           </View>
         </View>
         <CustomButton loading={loading} disable={loading} onPress={onSubmit}>{"Create Contact"}</CustomButton>
-        <PicturePicker ref={sheetRef}  onClose={closeSheet} onOpen={openSheet}/>
+        <PicturePicker onFileSelected={onFileSelected} ref={sheetRef} onClose={closeSheet} onOpen={openSheet} />
       </KeyboardAvoidingView>
     </View>
   );

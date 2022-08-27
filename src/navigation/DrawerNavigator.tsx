@@ -10,6 +10,8 @@ import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useAppDispatch } from "../store/store";
 import { logOutAC } from "../store/authReducer";
+import { SettingsScreen } from "../screens/Home/SettingsScreen";
+import { SettingsNavigator } from "./SettingsNavigator";
 
 
 const Drawer = createDrawerNavigator();
@@ -77,6 +79,22 @@ export const DrawerNavigator = () => {
           <Ionicons name={"beer-outline"} size={23}
                     color={drawerConfig.color} />,
       }} />
+         <Drawer.Screen name={"SettingsNavigator"} component={SettingsNavigator} options={{
+        drawerLabel: "Settings",
+        drawerLabelStyle: { left: -20 },
+        drawerIcon: (drawerConfig) =>
+          <Ionicons name={"settings"} size={23}
+                    color={drawerConfig.color} />,
+      }} />
+
+
+      {/*<Drawer.Screen name={"SettingsScreen"} component={SettingsScreen} options={{*/}
+      {/*  drawerLabel: "Settings",*/}
+      {/*  drawerLabelStyle: { left: -20 },*/}
+      {/*  drawerIcon: (drawerConfig) =>*/}
+      {/*    <Ionicons name={"settings"} size={23}*/}
+      {/*              color={drawerConfig.color} />,*/}
+      {/*}} />*/}
     </Drawer.Navigator>
   );
 };

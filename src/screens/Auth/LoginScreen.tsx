@@ -72,7 +72,7 @@ export const LoginScreen = ({}: LoginScreenPropsType) => {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"position"} keyboardVerticalOffset={20}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"position"} keyboardVerticalOffset={-10}>
         <View style={styles.logo}>
           <Image style={styles.image} source={require("../../../assets/images/img_1.png")} />
         </View>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { DEV_BACKEND_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 
 
 export type LoginType = {
@@ -29,6 +30,16 @@ export type CreateContact = {
 
 let headers = {};
 
+
+export const navigationRef = React.createRef<any>()
+
+export const navTo = (name: string, params: any) => {
+  if (navigationRef.current) {
+    navigationRef.current.navTo(name, params)
+  }
+}
+
+
 export const instance = axios.create({
   baseURL: DEV_BACKEND_URL,
   headers,
@@ -47,6 +58,30 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+
+// instance.interceptors.response.use(
+//   response=> new Promise((res, rej)=> {
+//     res(response)
+//   }),
+//   error => {
+//     if (!error.response) {
+//       return new Promise((res, rej)=> {
+//         rej(error)
+//       })
+//     }
+//     if (error.response.status===403) {
+//
+//     } else {
+//       return new Promise((res, rej)=> {
+//         rej(error)
+//       })
+//     }
+//   }
+// );
+
+
+
 
 export const apiRequests = {
   register({ email, password, username, first_name, last_name }: LoginType) {

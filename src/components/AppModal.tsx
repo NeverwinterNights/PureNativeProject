@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, ScrollView, StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from "react-native";
 import colors from "../../assets/theme/colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -10,6 +10,7 @@ type AppModalPropsType = {
   title: string
   modalBody?: any
   modalFooter?: any
+  closeOtTouchOut?:boolean
 }
 
 export const AppModal = ({
@@ -18,12 +19,18 @@ export const AppModal = ({
                            modalBody,
                            modalFooter,
                            iconName,
+                           closeOtTouchOut,
                            title,
                          }: AppModalPropsType) => {
+
   return (
     <>
       <Modal visible={visibleModal} transparent>
-        <TouchableOpacity onPress={() => console.log ("click")} style={styles.wrap}>
+        <TouchableOpacity onPress={() => {
+          if (closeOtTouchOut) {
+            setVisibleModal(false)
+          }
+        }} style={styles.wrap}>
           <View style={styles.modal}>
             <ScrollView>
               <View style={styles.header}>

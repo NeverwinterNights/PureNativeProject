@@ -3,7 +3,6 @@ import React from 'react';
 import { ContactScreen, ContactScreenOptions } from "../screens/Home/ContactScreen";
 import {ContactDetailScreen} from '../screens/Home/ContactDetailScreen';
 import { CreateContactScreen } from "../screens/Home/CreateContactScreen";
-import {SettingsScreen} from '../screens/Home/SettingsScreen';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { useAppNavigation } from "./navigationTypes";
 
@@ -31,18 +30,15 @@ export const HomeNavigator = () => {
           },
         }}
       />
-      <Stack.Screen name={'SettingsScreen'} component={SettingsScreen} options={{
-        headerTitle:"Settings",
-        headerTitleAlign:"center",
-        headerLeft: (props) => {
-          return (
-            <>
-              {<HeaderBackButton style={{left:30}} onPress={navigation.goBack} {...props} />}
-            </>
-          );
-        },
-
-      }} />
+      {/*<Stack.Screen name={'SettingsScreen'} component={SettingsScreen} options={{*/}
+      {/*  headerTitle:"Settings",*/}
+      {/*  headerTitleAlign:"center",*/}
+      {/*  headerLeft: (props) => {*/}
+      {/*    return (*/}
+      {/*      <HeaderBackButton style={{left:-13}} onPress={navigation.goBack} {...props} />*/}
+      {/*    );*/}
+      {/*  },*/}
+      {/*}} />*/}
     </Stack.Navigator>
   );
 };
