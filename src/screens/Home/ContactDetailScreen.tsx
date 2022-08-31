@@ -47,7 +47,6 @@ export const ContactDetailScreen = ({ route }: ContactDetailScreenPropsType) => 
         },
       },
     ]);
-
   };
 
 
@@ -143,6 +142,7 @@ export const ContactDetailScreen = ({ route }: ContactDetailScreenPropsType) => 
   };
 
 
+
   return (
     <>
       {isLoading ?
@@ -151,8 +151,6 @@ export const ContactDetailScreen = ({ route }: ContactDetailScreenPropsType) => 
         <View style={styles.container}>
           {/*{loading && <View style={styles.noImage}><Text style={styles.noImageText}>Loading photo</Text></View>}*/}
           {isLoading && <View style={styles.loading}><Text style={styles.noImageText}>Loading photo</Text></View>}
-
-
           {item.contact_picture !== "https://null.jpg" || pic ?
             <Image onError={onError} onLoadStart={onLoadStart} onLoadEnd={onLoadEnd} style={styles.image}
                    source={{ uri: pic ? pic : item.contact_picture }} /> :
