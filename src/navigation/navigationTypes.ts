@@ -7,6 +7,9 @@ import { SignUpScreen } from "../screens/Auth/SignUpScreen";
 import { MainScreen } from "../screens/Main/MainScreen";
 import { SettingsNavigator } from "./SettingsNavigator";
 import { Logout } from "../components/Logout";
+import { ContactData } from "../store/contactsReducer";
+import { ContactDetailScreen } from "../screens/Home/ContactDetailScreen";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type AuthNavigatorStackParamList = {
   LoginScreen: undefined;
@@ -21,8 +24,8 @@ export type SettingsNavigatorStackParamList = {
 
 export type HomeNavigatorStackParamList = {
   ContactScreen: undefined;
-  ContactDetailScreen: undefined;
-  CreateContactScreen: undefined;
+  ContactDetailScreen: { item: ContactData };
+  CreateContactScreen: { contact: ContactData } | undefined;
 };
 
 export type DrawerNavigatorParamList = {
@@ -35,6 +38,12 @@ export type MainNavigatorStackParamList = {
   AuthNavigator: NavigatorScreenParams<AuthNavigatorStackParamList>;
   DrawerNavigator: NavigatorScreenParams<DrawerNavigatorParamList>;
 };
+
+
+export type ContactDetailScreenPropsType = NativeStackScreenProps<HomeNavigatorStackParamList, 'ContactDetailScreen'>
+export type CreateContactScreenPropsType = NativeStackScreenProps<HomeNavigatorStackParamList, 'CreateContactScreen'>
+
+
 
 export const useAppNavigation = () => useNavigation<NavigationType>();
 

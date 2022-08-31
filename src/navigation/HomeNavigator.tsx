@@ -21,7 +21,6 @@ export const HomeNavigator = () => {
         name={'CreateContactScreen'}
         component={CreateContactScreen}
         options={{
-          headerTitle:"Create Contact",
           headerTitleAlign:"center",
           headerLeft: (props) => {
             return (

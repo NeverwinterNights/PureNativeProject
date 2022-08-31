@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { AppModal } from "../../components/AppModal";
@@ -37,6 +37,27 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
   const contactsError = useAppSelector(state => state.contactsReducer.error);
   const dispatch = useAppDispatch();
   const navigation = useAppNavigation();
+  const data = useAppSelector(state => state.contactsReducer.data);
+  const contactsRef = useRef<ContactData[]>([]);
+
+  useEffect(() => {
+    const prev = contactsRef.current;
+
+    contactsRef.current = data;
+
+    const newList = contactsRef.current;
+    if (newList.length - prev.length === 1) {
+      const newContact: ContactData | undefined = newList.find(
+        (item) => !prev.map((i) => i.id).includes(item.id),
+      );
+      if (newContact) {
+        // navigation.navigate("DrawerNavigator", {
+        //   screen: "HomeNavigator",
+        //   params: { screen: "ContactDetailScreen", params: { item: newContact } },
+        // });
+      }
+    }
+  }, [data.length]);
 
 
   const getSettings = async () => {
@@ -76,9 +97,13 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
 
   const renderFunc = (item: ContactData) => {
     return (
-      <TouchableOpacity style={styles.item}>
+      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate("DrawerNavigator", {
+        screen: "HomeNavigator",
+        params: { screen: "ContactDetailScreen", params: { item: item } },
+      })}>
         <View style={styles.main}>
-          {item.contact_picture ? <Image style={styles.image} source={{ uri: item.contact_picture }} /> :
+          {item.contact_picture !== "https://null.jpg" ?
+            <Image style={styles.image} source={{ uri: item.contact_picture }} /> :
             <View style={styles.fakeAvatar}>
               <Text style={{ fontSize: 16, marginRight: item.last_name ? 3 : 0 }}>{item.first_name[0]}</Text>
               <Text style={{ fontSize: 16 }}>{item.last_name[0]}</Text>

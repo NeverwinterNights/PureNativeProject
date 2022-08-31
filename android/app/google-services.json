@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "14062604175",
+    "project_id": "nativecli-14b4b",
+    "storage_bucket": "nativecli-14b4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14062604175:android:4ced6390a786e7823c05fa",
+        "android_client_info": {
+          "package_name": "com.awesometsproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14062604175-1399h21033sjp8hgo9mucl588b13rbeb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbG4cmp1zU0rhQKRg5V4yjJYmkDAwlaRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "14062604175-1399h21033sjp8hgo9mucl588b13rbeb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

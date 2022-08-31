@@ -27,6 +27,15 @@ export type CreateContact = {
   is_favorite: boolean
 }
 
+export type UpdateContact = {
+  id:number
+  country_code: string
+  first_name: string
+  last_name: string
+  phone_number: string
+  contact_picture: string
+  is_favorite: boolean
+}
 
 let headers = {};
 
@@ -60,25 +69,25 @@ instance.interceptors.request.use(
 );
 
 
-// instance.interceptors.response.use(
-//   response=> new Promise((res, rej)=> {
-//     res(response)
-//   }),
-//   error => {
-//     if (!error.response) {
-//       return new Promise((res, rej)=> {
-//         rej(error)
-//       })
-//     }
-//     if (error.response.status===403) {
-//
-//     } else {
-//       return new Promise((res, rej)=> {
-//         rej(error)
-//       })
-//     }
-//   }
-// );
+instance.interceptors.response.use(
+  response=> new Promise((res, rej)=> {
+    res(response)
+  }),
+  error => {
+    if (!error.response) {
+      return new Promise((res, rej)=> {
+        rej(error)
+      })
+    }
+    if (error.response.status===403) {
+
+    } else {
+      return new Promise((res, rej)=> {
+        rej(error)
+      })
+    }
+  }
+);
 
 
 
@@ -97,5 +106,11 @@ export const apiRequests = {
   },
   createContacts({ country_code, first_name, last_name, phone_number, contact_picture, is_favorite }: CreateContact) {
     return instance.post("/contacts/", {country_code, first_name, last_name, phone_number, contact_picture, is_favorite});
+  },
+  deleteContacts(id:number) {
+    return instance.delete(`/contacts/${id}`);
+  },
+  updateContacts({ id, country_code, first_name, last_name, phone_number, contact_picture, is_favorite }: UpdateContact ) {
+    return instance.patch(`/contacts/${id}`, {country_code, first_name, last_name, phone_number, contact_picture, is_favorite});
   },
 };
