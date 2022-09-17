@@ -10,27 +10,36 @@ import { useAppDispatch, useAppSelector } from "../../store/store";
 import { LoginData } from "../../api/api";
 import { loginTh } from "../../store/authReducer";
 import { PasswordInput } from "../../components/PasswordInput";
+import { SubmitHandler, useForm, Controller } from "react-hook-form";
 
 
 type LoginScreenPropsType = {};
 
 export const LoginScreen = ({}: LoginScreenPropsType) => {
-  const [formLoginData, setFormLoginData] = useState<LoginData>({} as LoginData);
-  const [error, setError] = useState<LoginData>({} as LoginData);
+  // const [formLoginData, setFormLoginData] = useState<LoginData>({} as LoginData);
+  // const [error, setError] = useState<LoginData>({} as LoginData);
   const [registeredUser, setRegisteredUser] = useState("");
 
   const dispatch = useAppDispatch();
-  const errors = useAppSelector(state => state.authReducer.error);
+  const error = useAppSelector(state => state.authReducer.error);
   const loading = useAppSelector(state => state.appReducer.loading);
   const navigation = useAppNavigation();
   const data = useAppSelector(state => state.authReducer.data);
 
+  const { control, handleSubmit, reset, formState: { errors } } = useForm<LoginData>({
+    mode: "onChange",
+  });
+
+
+
   useEffect(() => {
     if (data) {
-      setFormLoginData({ ...formLoginData, username: data.username });
+      // setFormLoginData({ ...formLoginData, username: data.username });
       setRegisteredUser(data.username);
+      // navigation.navigate("MainScreen")
     }
   }, []);
+
 
 
   const retryFn = () => {
@@ -41,33 +50,48 @@ export const LoginScreen = ({}: LoginScreenPropsType) => {
     // console.log("hhhhh");
   };
 
-  const onChange = ({ name, value }: OnChangeParams) => {
-    setFormLoginData({
-      ...formLoginData,
-      [name]: value,
-    });
-    if (value !== "") {
-      setError((prev) => ({ ...prev, [name]: "" }));
-    }
+
+  // const onChange = ({ name, value }: OnChangeParams) => {
+  //   setFormLoginData({
+  //     ...formLoginData,
+  //     [name]: value,
+  //   });
+  //   // if (value !== "") {
+  //   //   setError((prev) => ({ ...prev, [name]: "" }));
+  //   // }
+  //
+  //
+  //
+  // };
+
+
+  // const onSubmit = () => {
+  //   if (!formLoginData.username) {
+  //     setError((prev) => ({ ...prev, username: "User name is required" }));
+  //   }
+  //   if (!formLoginData.password) {
+  //     setError((prev) => ({ ...prev, password: "Password is required" }));
+  //   }
+  //   if (formLoginData.password && formLoginData.password.length < 8) {
+  //     setError((prev) => ({ ...prev, password: "Password is 8 character minimum" }));
+  //   }
+  //
+  //   if (Object.values(formLoginData).length === 2 &&
+  //     Object.values(formLoginData).every((item) => item.trim().length > 0) &&
+  //     Object.values(error).every((item) => !item)) {
+  //     dispatch(loginTh({ username: formLoginData.username, password: formLoginData.password }));
+  //   }
+  // };
+
+
+  const onSubmit = (dataInput: LoginData) => {
+    dispatch(loginTh({ username: dataInput.username, password: dataInput.password }));
+
   };
 
-
-  const onSubmit = () => {
-    if (!formLoginData.username) {
-      setError((prev) => ({ ...prev, username: "User name is required" }));
-    }
-    if (!formLoginData.password) {
-      setError((prev) => ({ ...prev, password: "Password is required" }));
-    }
-    if (formLoginData.password && formLoginData.password.length < 8) {
-      setError((prev) => ({ ...prev, password: "Password is 8 character minimum" }));
-    }
-
-    if (Object.values(formLoginData).length === 2 &&
-      Object.values(formLoginData).every((item) => item.trim().length > 0) &&
-      Object.values(error).every((item) => !item)) {
-      dispatch(loginTh({ username: formLoginData.username, password: formLoginData.password }));
-    }
+  const returnToRegisterHandler = () => {
+    reset();
+     navigation.navigate("AuthNavigator", { screen: "SignUpScreen" })
   };
 
   return (
@@ -80,20 +104,49 @@ export const LoginScreen = ({}: LoginScreenPropsType) => {
           Jungle!</Text>
 
         {registeredUser &&
-        <Message onDismiss={onDismiss} primary message={`User ${registeredUser} successfully created`} />}
-        {errors && errors.detail && <Message onDismiss={onDismiss} danger message={errors.detail} />}
-        <AppInput placeholder={"Enter Your Name"} icon={"emoticon-angry-outline"} label={"Login"}
-                  text={formLoginData.username} error={error.username} autoCapitalize={"words"}
-                  setText={(value) => onChange({ name: "username", value })} />
-        {/*<AppInput onPress={typeChangeHandler} placeholder={"Enter Password"} direction={"right"}*/}
-        {/*          icon={type ? "eye" : "eye-off"} label={"Password"}*/}
-        {/*          secureTextEntry={type} text={formLoginData.password} error={error.password}*/}
-        {/*          setText={(value) => onChange({ name: "password", value })} />*/}
-        <PasswordInput text={formLoginData.password} error={error.password} direction={"right"} onChange={onChange}
-                       placeholder={"Enter Password"} />
-        <View style={styles.buttonWrapper}><CustomButton disable={loading} loading={loading} onPress={onSubmit}
+          <Message onDismiss={onDismiss} primary message={`User ${registeredUser} successfully created`} />}
+        {error && error.detail && <Message onDismiss={onDismiss} danger message={error.detail} />}
+
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+
+          }}
+          name={"username"}
+          render={({ field: { onChange, onBlur, value } }) =>
+            <AppInput placeholder={"Enter Your Name"} icon={"emoticon-angry-outline"} label={"Login"}
+                      autoCapitalize={"words"}
+                      onBlur={onBlur} onChange={onChange} value={value}
+            />
+          }
+        />
+
+        {errors.username && <Text style={{ color: "red" }}>Login is required.</Text>}
+
+        <Controller
+          control={control}
+          rules={{
+            // required: "Password is required",
+            required: "Password is required",
+            minLength: {
+              value: 6,
+              message: "Password must have at least 6 characters",
+            },
+          }}
+          name={"password"}
+          render={({ field: { onChange, onBlur, value } }) =>
+            <PasswordInput direction={"right"} onChange={onChange}
+                           placeholder={"Enter Password"} onBlur={onBlur} value={value} />
+          }
+        />
+        {errors.password && <Text style={{ color: "red" }}>{errors.password.message}</Text>}
+
+
+        <View style={styles.buttonWrapper}><CustomButton disable={loading} loading={loading}
+                                                         onPress={handleSubmit(onSubmit)}
                                                          color={"accent"}>Submit</CustomButton></View>
-        <TouchableOpacity onPress={() => navigation.navigate("AuthNavigator", { screen: "SignUpScreen" })}><Text
+        <TouchableOpacity onPress={returnToRegisterHandler}><Text
           style={{ textAlign: "right" }}>Register</Text></TouchableOpacity>
       </KeyboardAvoidingView>
     </View>

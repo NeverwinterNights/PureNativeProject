@@ -85,12 +85,10 @@ export const ContactDetailScreen = ({ route }: ContactDetailScreenPropsType) => 
     setLoading(false);
 
   };
-  const onLoadEnd = () => {
-    setLoading(false);
-    console.log("End ");
+  const onLoadEnd = () => {    setLoading(false);
+
   };
   const onLoadStart = () => {
-    console.log("Start");
     setLoading(true);
   };
 

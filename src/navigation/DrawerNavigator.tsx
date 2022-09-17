@@ -9,7 +9,7 @@ import { HomeNavigator } from "./HomeNavigator";
 import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useAppDispatch } from "../store/store";
-import { logOutAC } from "../store/authReducer";
+import { clearErrorInAuthAC, logOutAC } from "../store/authReducer";
 import { SettingsScreen } from "../screens/Home/SettingsScreen";
 import { SettingsNavigator } from "./SettingsNavigator";
 
@@ -34,6 +34,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         text: "OK",
         onPress: () => {
           dispatch(logOutAC())
+          dispatch(clearErrorInAuthAC())
         },
       },
     ]);

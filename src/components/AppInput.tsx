@@ -15,8 +15,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import colors from "../../assets/theme/colors";
 
 type AppInputPropsType = {
-  setText: (text: string) => void
-  text: string
+  setText?: (text: string) => void
+  text?: string
   style?: StyleProp<TextStyle> | StyleProp<ViewStyle>
   label?: string
   // icon?: keyof typeof MaterialCommunityIcons.glyphMap
@@ -26,6 +26,8 @@ type AppInputPropsType = {
   direction?: "left" | "right"
   error?: string
   onPress?: () => void
+  onChange?: (text: string) => void
+  onBlur?: Function
 }
 
 export const AppInput = ({
@@ -37,6 +39,8 @@ export const AppInput = ({
                            label,
                            icon,
                            error,
+                           onBlur,
+                           onChange,
                            // typeChangeHandler,
                            ...restProps
                          }: AppInputPropsType & TextInputProps) => {
@@ -47,14 +51,16 @@ export const AppInput = ({
       <View
         style={[styles.container, { width: width }, { flexDirection: direction === "left" ? "row" : "row-reverse" }]}>
         {icon &&
-        <TouchableOpacity onPress={restProps.onPress}><MaterialCommunityIcons name={icon} style={styles.icon} size={20}
-                                                                              color={colors.grey} /></TouchableOpacity>}
+          <TouchableOpacity onPress={restProps.onPress}><MaterialCommunityIcons name={icon} style={styles.icon}
+                                                                                size={20}
+                                                                                color={colors.grey} /></TouchableOpacity>}
 
         {/*{element &&*/}
         {/*<TouchableOpacity onPress={restProps.onPress}>{element}</TouchableOpacity>}*/}
 
 
-        <TextInput placeholderTextColor={colors.grey} onChangeText={setText} value={text}
+        <TextInput onBlur={onBlur} placeholderTextColor={colors.grey} onChangeText={setText ? setText : onChange}
+                   value={text}
                    style={[styles.text, style]} {...restProps} />
       </View>
       {error && <Text style={{ color: "red", marginBottom: 3 }}>{error}</Text>}

@@ -30,6 +30,7 @@ const initialState: initialStateType = {
 export const loginAC = createAction<{ value: boolean }>("auth/loginAC");
 export const clearAuthStateAC = createAction("auth/clearAuthStateAC");
 export const logOutAC = createAction("auth/logOutAC");
+export const clearErrorInAuthAC = createAction("auth/clearErrorInAuthAC");
 
 export const authTh = createAsyncThunk<any, LoginType, ThunkError>("auth/authTh", async (data, {
     dispatch,
@@ -98,6 +99,9 @@ const slice = createSlice({
           AsyncStorage.removeItem("user");
           state.data = null;
           state.isLogging = false;
+        })
+        .addCase(clearErrorInAuthAC, (state, action) => {
+          state.error=null
         });
     },
   },

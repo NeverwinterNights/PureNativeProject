@@ -6,11 +6,10 @@ import { MainScreen } from "../screens/Main/MainScreen";
 
 export const MainNavigator = ({route}:any) => {
 
-
   const Stack = createNativeStackNavigator();
   return (
     <Stack.Navigator>
-      <Stack.Screen options={{headerShown:false}} name={'Main'} component={MainScreen} />
+      <Stack.Screen options={{headerShown:false}} name={'MainScreen'} component={MainScreen} />
       <Stack.Screen options={{headerShown:false}} name={'AuthNavigator'} component={AuthNavigator} />
       <Stack.Screen options={{headerShown:false}} name={'DrawerNavigator'} component={DrawerNavigator} />
     </Stack.Navigator>

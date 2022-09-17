@@ -40,6 +40,13 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
   const data = useAppSelector(state => state.contactsReducer.data);
   const contactsRef = useRef<ContactData[]>([]);
 
+
+  useEffect(() => {
+    dispatch(getContactsTh());
+  }, []);
+
+
+
   useEffect(() => {
     const prev = contactsRef.current;
 
@@ -77,9 +84,7 @@ export const ContactScreen = ({}: ContactScreenPropsType) => {
   );
 
 
-  useEffect(() => {
-    dispatch(getContactsTh());
-  }, []);
+
 
   const createContact = () => {
     navigation.navigate("DrawerNavigator", { screen: "HomeNavigator", params: { screen: "CreateContactScreen" } });
